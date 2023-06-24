@@ -38,7 +38,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public R login(SysUserBo user) {
         //3使用ProviderManager auth方法进行验证
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
         //校验失败了
