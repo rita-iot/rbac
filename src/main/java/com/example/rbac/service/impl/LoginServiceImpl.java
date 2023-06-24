@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -49,8 +50,10 @@ public class LoginServiceImpl implements LoginService {
         LoginUser loginUser = (LoginUser) (authenticate.getPrincipal());
         String userId = loginUser.getUser().getId().toString();
         String jwt = JwtUtil.createJWT(userId);
-        Map<String, String> map = new HashMap();
+        Map<String, Object> map = new HashMap();
         map.put("token", jwt);
+        map.put("user", loginUser.getUser());
+        map.put("menus", new ArrayList<>());
         //5系统用户相关所有信息放入redis
         String json = JSONObject.toJSONString(loginUser);
         redisCache.setCacheObject("login:" + userId, json);
