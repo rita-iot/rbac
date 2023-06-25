@@ -5,8 +5,10 @@ import com.example.rbac.config.common.R;
 import com.example.rbac.config.jwt.JwtUtil;
 import com.example.rbac.config.redis.RedisCache;
 import com.example.rbac.entity.LoginUser;
+import com.example.rbac.entity.SysPermission;
 import com.example.rbac.entity.bo.SysUserBo;
 import com.example.rbac.service.LoginService;
+import com.example.rbac.service.SysPermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,8 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,7 +34,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     AuthenticationManager authenticationManager;
-
+    @Autowired
+    private SysPermissionService sysPermissionService;
     @Autowired
     RedisCache redisCache;
 
@@ -53,7 +56,9 @@ public class LoginServiceImpl implements LoginService {
         Map<String, Object> map = new HashMap();
         map.put("token", jwt);
         map.put("user", loginUser.getUser());
-        map.put("menus", new ArrayList<>());
+
+        List<SysPermission> list = sysPermissionService.list();
+        map.put("menus", list);
         //5系统用户相关所有信息放入redis
         String json = JSONObject.toJSONString(loginUser);
         redisCache.setCacheObject("login:" + userId, json);
